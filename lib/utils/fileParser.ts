@@ -14,7 +14,7 @@ export interface ParsedRow {
  */
 export async function parseExcel(buffer: Buffer): Promise<ParsedRow[]> {
   const workbook = new ExcelJS.Workbook();
-  await workbook.xlsx.load(buffer as unknown as ExcelJS.Buffer);
+  await workbook.xlsx.load(buffer);
 
   const worksheet = workbook.worksheets[0];
   if (!worksheet) {
@@ -93,16 +93,16 @@ export async function parsePDF(buffer: Buffer): Promise<ParsedRow[]> {
   // For production, you might want to use more sophisticated PDF parsing
   // or require structured PDFs with tables
 
-  const lines = text.split("\n").filter((line: string) => line.trim().length > 0);
+  const lines = text.split("\n").filter((line) => line.trim().length > 0);
   const rows: ParsedRow[] = [];
 
   // Basic heuristic: look for tab-separated or space-separated data
   // This is a simplified parser - you may need to customize based on your PDF format
   for (const line of lines) {
-    const parts = line.split(/\s{2,}|\t/).filter((p: string) => p.trim().length > 0);
+    const parts = line.split(/\s{2,}|\t/).filter((p) => p.trim().length > 0);
     if (parts.length >= 2) {
       const row: ParsedRow = {};
-      parts.forEach((part: string, index: number) => {
+      parts.forEach((part, index) => {
         row[`column_${index + 1}`] = part.trim();
       });
       rows.push(row);

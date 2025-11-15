@@ -39,7 +39,7 @@ export async function getMonthlyTrend(
     const officers = await OfficerModel.find(query).lean();
     const monthlyData = new Map<string, number>();
 
-    officers.forEach((officer: any) => {
+    officers.forEach((officer) => {
       const month = officer.lastUpdated?.toISOString().slice(0, 7) || "2025-01";
       monthlyData.set(month, (monthlyData.get(month) || 0) + (officer.caseClosed || 0));
     });
@@ -52,7 +52,7 @@ export async function getMonthlyTrend(
     const convictions = await CCTNSDataModel.find(query).lean();
     const monthlyData = new Map<string, number>();
 
-    convictions.forEach((conv: any) => {
+    convictions.forEach((conv) => {
       const month =
         conv.convictionDate?.toISOString().slice(0, 7) ||
         conv.createdAt.toISOString().slice(0, 7);
@@ -67,7 +67,7 @@ export async function getMonthlyTrend(
     const detections = await CCTNSDataModel.find(query).lean();
     const monthlyData = new Map<string, number>();
 
-    detections.forEach((det: any) => {
+    detections.forEach((det) => {
       const month =
         det.detectionDate?.toISOString().slice(0, 7) || det.createdAt.toISOString().slice(0, 7);
       monthlyData.set(month, (monthlyData.get(month) || 0) + 1);
@@ -80,7 +80,7 @@ export async function getMonthlyTrend(
     const officers = await OfficerModel.find(query).lean();
     const monthlyData = new Map<string, { total: number; count: number }>();
 
-    officers.forEach((officer: any) => {
+    officers.forEach((officer) => {
       const month = officer.lastUpdated?.toISOString().slice(0, 7) || "2025-01";
       const existing = monthlyData.get(month) || { total: 0, count: 0 };
       existing.total += officer.totalScore || 0;
@@ -113,7 +113,7 @@ export async function getMonthlyTrend(
   const average =
     dataPoints.length > 0
       ? Number(
-          (dataPoints.reduce((sum: number, point: any) => sum + point.value, 0) / dataPoints.length).toFixed(
+          (dataPoints.reduce((sum, point) => sum + point.value, 0) / dataPoints.length).toFixed(
             2
           )
         )
@@ -142,7 +142,7 @@ export async function getDriveTrend(driveName: string): Promise<TrendDataPoint[]
 
   const driveMap = new Map<string, number>();
 
-  drives.forEach((drive: any) => {
+  drives.forEach((drive) => {
     const date = drive.driveDate?.toISOString().slice(0, 10) || drive.createdAt.toISOString().slice(0, 10);
     driveMap.set(date, (driveMap.get(date) || 0) + (drive.casesHandled || 0));
   });

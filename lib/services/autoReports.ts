@@ -45,7 +45,7 @@ export async function generateGoodWorkReport(
 
   // Get district highlights
   const topDistricts = await getTopDistricts(5);
-  const districtHighlights = topDistricts.map((district: any) => {
+  const districtHighlights = topDistricts.map((district) => {
     let achievement = "";
     let metric = "";
 
@@ -78,7 +78,7 @@ export async function generateGoodWorkReport(
     .lean();
 
   // Build top performers with achievements
-  const topPerformers = topOfficers.map((officer: any) => {
+  const topPerformers = topOfficers.map((officer) => {
     const achievements: string[] = [];
 
     if (officer.caseClosed && officer.caseClosed > 50) {
@@ -91,9 +91,11 @@ export async function generateGoodWorkReport(
       achievements.push(`Excellence score of ${officer.totalScore.toFixed(1)}`);
     }
 
-    const officerRecognitions = recognitions.filter((r: any) => (r.officerId as any)?._id?.toString() === officer._id.toString());
+    const officerRecognitions = recognitions.filter(
+      (r) => (r.officerId as any)?._id?.toString() === officer._id.toString()
+    );
     if (officerRecognitions.length > 0) {
-      const badges = officerRecognitions.map((r: any) => r.badge).join(", ");
+      const badges = officerRecognitions.map((r) => r.badge).join(", ");
       achievements.push(`Awarded ${badges} recognition`);
     }
 
@@ -112,14 +114,14 @@ export async function generateGoodWorkReport(
 
   const statistics = {
     totalOfficers: allOfficers.length,
-    totalCasesClosed: allOfficers.reduce((sum: number, o: any) => sum + (o.caseClosed || 0), 0),
-    totalConvictions: allCCTNS.filter((c: any) => c.module === "Convictions").length,
-    totalDetections: allCCTNS.filter((c: any) => c.module === "Detections").length,
+    totalCasesClosed: allOfficers.reduce((sum, o) => sum + (o.caseClosed || 0), 0),
+    totalConvictions: allCCTNS.filter((c) => c.module === "Convictions").length,
+    totalDetections: allCCTNS.filter((c) => c.module === "Detections").length,
     averageScore:
       allOfficers.length > 0
         ? Number(
             (
-              allOfficers.reduce((sum: number, o: any) => sum + (o.totalScore || 0), 0) / allOfficers.length
+              allOfficers.reduce((sum, o) => sum + (o.totalScore || 0), 0) / allOfficers.length
             ).toFixed(2)
           )
         : 0
@@ -281,6 +283,6 @@ export async function generateGoodWorkExcel(report: GoodWorkReport): Promise<Buf
   });
 
   const buffer = await workbook.xlsx.writeBuffer();
-  return buffer as unknown as Buffer;
+  return buffer as Buffer;
 }
 

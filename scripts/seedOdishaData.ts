@@ -302,7 +302,7 @@ async function generateRecognitions(count: number) {
 
   const recognitions = [];
   const topOfficers = officers
-    .sort((a: any, b: any) => (b.totalScore || 0) - (a.totalScore || 0))
+    .sort((a, b) => (b.totalScore || 0) - (a.totalScore || 0))
     .slice(0, Math.floor(count * 0.2));
 
   for (let i = 0; i < count; i++) {
@@ -313,7 +313,7 @@ async function generateRecognitions(count: number) {
       officer = topOfficers[i];
       badge = "Gold";
     } else if (i < count * 0.5) {
-      officer = randomElement(officers.filter((o: any) => (o.totalScore || 0) > 50));
+      officer = randomElement(officers.filter((o) => (o.totalScore || 0) > 50));
       badge = "Silver";
     } else {
       officer = randomElement(officers);

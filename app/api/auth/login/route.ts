@@ -18,29 +18,27 @@ export async function POST(request: NextRequest) {
     const { username, password } = parseResult.data;
     
     // Try to connect to MongoDB
-    try {
-      await connectMongo();
-    } catch (dbError: unknown) {
-      console.error("Database connection error:", dbError);
-      const errorMsg = (dbError instanceof Error ? dbError.message : String(dbError)) || "Database connection failed";
-      if (errorMsg.includes("ECONNREFUSED") || errorMsg.includes("ENOTFOUND")) {
-        return serverError("Cannot connect to database. Please check your MongoDB connection.", {
-          error: "Database connection failed",
-          hint: "Make sure MongoDB is running and MONGODB_URI is set in .env.local"
-        });
-      }
-      throw dbError;
+    const connection = await connectMongo();
+    if (!connection) {
+      return serverError("Cannot connect to database. Please check your MongoDB connection.", {
+        error: "Database connection failed",
+        hint: "Make sure MongoDB is running and MONGODB_URI is set in .env.local. If using MongoDB Atlas, whitelist your IP address."
+      });
     }
 
     const admin = await AdminModel.findOne({ username });
     if (!admin) {
+      console.warn(`Login attempt failed: User '${username}' not found`);
       return unauthorized("Invalid username or password");
     }
 
     const passwordMatch = await comparePassword(password, admin.password);
     if (!passwordMatch) {
+      console.warn(`Login attempt failed: Invalid password for user '${username}'`);
       return unauthorized("Invalid username or password");
     }
+
+    console.log(`Successful login: ${username} (${admin.role})`);
 
     const token = signJwt({
       sub: admin._id.toString(),

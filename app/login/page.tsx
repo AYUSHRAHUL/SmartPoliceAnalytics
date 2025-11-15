@@ -84,6 +84,10 @@ export default function LoginPage() {
       
       if (errorData?.hint) {
         errorMsg = `${errorData.error || errorMsg}\n\n💡 ${errorData.hint}`;
+        // Add setup instructions if it's a MongoDB connection error
+        if (errorData.error?.includes("MongoDB") || errorData.error?.includes("connection")) {
+          errorMsg += "\n\n📝 Setup Instructions:\n1. Create a .env.local file in the project root\n2. Add MONGODB_URI with your MongoDB connection string\n3. See SETUP_ENV.md for detailed instructions";
+        }
       } else if (errorData?.message) {
         errorMsg = errorData.message;
       } else if (axiosError?.code === "ERR_NETWORK") {

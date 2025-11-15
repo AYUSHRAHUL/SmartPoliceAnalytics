@@ -1,8 +1,7 @@
 import { connectMongo } from "../db";
 import { OfficerModel, CCTNSDataModel, ImportLogModel } from "../models";
 import { parseFile, type ParsedRow } from "../utils/fileParser";
-import type { CCTNSModule } from "../models/CCTNSData";
-import type { ImportSource } from "../models/ImportLog";
+import type { CCTNSModule, ImportSource } from "../models/ImportLog";
 
 export interface IngestionResult {
   success: boolean;

@@ -32,7 +32,7 @@ export async function getRecognitionFeed() {
     department?: string;
   };
 
-  return recognitions.map((rec: any) => {
+  return recognitions.map((rec) => {
     const officer = rec.officerId as PopulatedOfficer | null;
     return {
       id: rec._id.toString(),

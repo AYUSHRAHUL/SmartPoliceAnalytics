@@ -22,17 +22,7 @@ if (!cached) {
   cached = globalWithMongoose.mongooseConn = { conn: null, promise: null };
 }
 
-export async function connectMongo(): Promise<typeof mongoose | null> {
-  // If the build is running and we want to skip DB access during
-  // static export, respect the flag and return null instead of
-  // attempting to connect. This avoids build-time failures when the
-  // project's environment cannot reach MongoDB (e.g., local build
-  // without Atlas IP whitelisting).
-  if (process.env.SKIP_DB_ON_BUILD === "true") {
-    // Keep a short-circuit to avoid repeated attempts.
-    return null;
-  }
-
+export async function connectMongo() {
   if (cached.conn) {
     return cached.conn;
   }
@@ -41,32 +31,18 @@ export async function connectMongo(): Promise<typeof mongoose | null> {
     const uri = env.MONGODB_URI || "mongodb://localhost:27017/police_analytics";
     cached.promise = mongoose.connect(uri, {
       dbName: "police_analytics"
-    }).catch((error: any) => {
-      // Don't keep a rejected promise around.
+    }).catch((error) => {
       cached.promise = null;
-      // Log and swallow the error so build-time prerender doesn't fail.
-      // Callers should handle missing data gracefully where possible.
-      // eslint-disable-next-line no-console
-      console.warn("connectMongo: connection failed (swallowed):", error?.message || error);
-      return null as unknown as typeof mongoose;
+      throw error;
     });
   }
 
   try {
-    const conn = await cached.promise;
-    if (!conn) {
-      // Connection attempt returned null (was swallowed). Return null.
-      return null;
-    }
-    cached.conn = conn;
+    cached.conn = await cached.promise;
     return cached.conn;
-  } catch (error: any) {
-    // Reset promise so future calls can retry, but do not throw during
-    // build/export to avoid aborting the process.
+  } catch (error) {
     cached.promise = null;
-    // eslint-disable-next-line no-console
-    console.warn("connectMongo: connection attempt threw (swallowed):", error?.message || error);
-    return null;
+    throw error;
   }
 }
 

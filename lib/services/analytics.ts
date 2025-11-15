@@ -5,7 +5,7 @@ import { getDemoOfficers } from "../demo";
 export async function getAnalyticsOverview() {
   await connectMongo();
   const officersDb = await OfficerModel.find().lean();
-  const officers = (officersDb.length ? officersDb : getDemoOfficers(30)) as any[];
+  const officers = officersDb.length ? officersDb : getDemoOfficers(30);
 
   const trend = officers
     .map((officer) => ({
@@ -44,7 +44,7 @@ export async function getAnalyticsOverview() {
     const recognitionCounts = await RecognitionModel.aggregate([
       { $group: { _id: "$badge", count: { $sum: 1 } } }
     ]);
-    recognitionData = recognitionCounts.map((item: any) => ({
+    recognitionData = recognitionCounts.map((item) => ({
       badge: item._id,
       count: item.count
     }));

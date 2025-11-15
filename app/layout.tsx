@@ -6,6 +6,7 @@ import "./globals.css";
 // which calls server APIs / DB during `next build`.
 export const dynamic = "force-dynamic";
 
+// Font loaders must be called at module scope
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-inter",

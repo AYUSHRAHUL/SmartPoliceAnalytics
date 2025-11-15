@@ -3,11 +3,11 @@ import { OfficerModel, KPIWeightsModel, AdminModel } from "../models";
 
 export async function getAdminDashboard() {
   await connectMongo();
-  const [officers, kpi, admins] = (await Promise.all([
+  const [officers, kpi, admins] = await Promise.all([
     OfficerModel.find().sort({ createdAt: -1 }).limit(20).lean(),
     KPIWeightsModel.findOne().lean(),
     AdminModel.find().select("-password").lean()
-  ])) as [any[], any, any];
+  ]);
 
   if (!officers.length) {
     const { getDemoOfficers } = await import("../demo");
@@ -35,7 +35,7 @@ export async function getAdminDashboard() {
   }
 
   return {
-    officers: officers.map((officer: any) => ({
+    officers: officers.map((officer) => ({
       id: officer._id.toString(),
       name: officer.name,
       badgeId: officer.badgeId,
@@ -49,7 +49,7 @@ export async function getAdminDashboard() {
       feedbackWeight: 0.2,
       awarenessWeight: 0.1
     },
-    admins: admins.map((admin: any) => ({
+    admins: admins.map((admin) => ({
       id: admin._id.toString(),
       username: admin.username,
       role: admin.role

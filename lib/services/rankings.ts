@@ -27,7 +27,7 @@ export async function getRankings(category: RankingCategory = "Total", limit = 2
 
   if (!officers.length) {
     const demo = getDemoOfficers(limit);
-    return demo.map((officer: any, index: number) => ({
+    return demo.map((officer, index) => ({
       rank: index + 1,
       id: `${index}`,
       name: officer.name,
@@ -41,7 +41,7 @@ export async function getRankings(category: RankingCategory = "Total", limit = 2
     }));
   }
 
-  return officers.map((officer: any, index: number) => ({
+  return officers.map((officer, index) => ({
     rank: index + 1,
     id: officer._id.toString(),
     name: officer.name,

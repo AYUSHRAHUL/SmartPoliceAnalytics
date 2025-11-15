@@ -21,9 +21,11 @@ export interface JwtPayload {
 
 export function signJwt(payload: JwtPayload) {
   const secret = env.JWT_SECRET as string;
-  const expiresIn = env.JWT_EXPIRES_IN || "7d";
-  const options = { expiresIn };
-  return jwt.sign(payload, secret, options as SignOptions);
+  const expiresIn = (env.JWT_EXPIRES_IN || "7d") as string;
+  const options: SignOptions = {
+    expiresIn
+  };
+  return jwt.sign(payload, secret, options);
 }
 
 export function verifyJwt(token: string) {

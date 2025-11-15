@@ -73,7 +73,7 @@ export async function generateNBWPDF(): Promise<Buffer> {
 
     // Table Data
     let y = startY + rowHeight;
-    data.forEach((row: any) => {
+    data.forEach((row) => {
       if (y > 500) {
         doc.addPage();
         y = 30;
@@ -94,7 +94,7 @@ export async function generateNBWPDF(): Promise<Buffer> {
         row.nbwExecutedOther.toString()
       ];
 
-      values.forEach((value: any, i: number) => {
+      values.forEach((value, i) => {
         doc.fontSize(7).text(value, x, y, { width: colWidths[i], align: "center" });
         x += colWidths[i];
       });
@@ -108,19 +108,19 @@ export async function generateNBWPDF(): Promise<Buffer> {
       x = 30;
       const totals = [
         "TOTAL",
-        data.reduce((sum: number, r: any) => sum + r.totalNBWPendingStart, 0).toString(),
-        data.reduce((sum: number, r: any) => sum + r.nbwReceived, 0).toString(),
-        data.reduce((sum: number, r: any) => sum + r.nbwExecutedDuringDrive, 0).toString(),
-        data.reduce((sum: number, r: any) => sum + r.nbwOtherwiseDisposed, 0).toString(),
-        data.reduce((sum: number, r: any) => sum + r.totalDisposed, 0).toString(),
-        data.reduce((sum: number, r: any) => sum + r.nbwPendingEnd, 0).toString(),
-        data.reduce((sum: number, r: any) => sum + r.nbwExecutedSTGR, 0).toString(),
-        data.reduce((sum: number, r: any) => sum + r.nbwExecutedST, 0).toString(),
-        data.reduce((sum: number, r: any) => sum + r.nbwExecutedGR, 0).toString(),
-        data.reduce((sum: number, r: any) => sum + r.nbwExecutedOther, 0).toString()
+        data.reduce((sum, r) => sum + r.totalNBWPendingStart, 0).toString(),
+        data.reduce((sum, r) => sum + r.nbwReceived, 0).toString(),
+        data.reduce((sum, r) => sum + r.nbwExecutedDuringDrive, 0).toString(),
+        data.reduce((sum, r) => sum + r.nbwOtherwiseDisposed, 0).toString(),
+        data.reduce((sum, r) => sum + r.totalDisposed, 0).toString(),
+        data.reduce((sum, r) => sum + r.nbwPendingEnd, 0).toString(),
+        data.reduce((sum, r) => sum + r.nbwExecutedSTGR, 0).toString(),
+        data.reduce((sum, r) => sum + r.nbwExecutedST, 0).toString(),
+        data.reduce((sum, r) => sum + r.nbwExecutedGR, 0).toString(),
+        data.reduce((sum, r) => sum + r.nbwExecutedOther, 0).toString()
       ];
 
-      totals.forEach((value: any, i: number) => {
+      totals.forEach((value, i) => {
         doc.fontSize(8).font("Helvetica-Bold").text(value, x, y, {
           width: colWidths[i],
           align: "center"
@@ -179,7 +179,7 @@ export async function generateNBWExcel(): Promise<Buffer> {
   };
 
   // Add data
-  data.forEach((row: any) => {
+  data.forEach((row) => {
     sheet.addRow({
       district: row.district,
       totalNBWPendingStart: row.totalNBWPendingStart,
@@ -200,17 +200,17 @@ export async function generateNBWExcel(): Promise<Buffer> {
   if (data.length > 0) {
     const totalsRow = sheet.addRow({
       district: "TOTAL",
-      totalNBWPendingStart: data.reduce((sum: number, r: any) => sum + r.totalNBWPendingStart, 0),
-      nbwReceived: data.reduce((sum: number, r: any) => sum + r.nbwReceived, 0),
-      total: data.reduce((sum: number, r: any) => sum + r.total, 0),
-      nbwExecutedDuringDrive: data.reduce((sum: number, r: any) => sum + r.nbwExecutedDuringDrive, 0),
-      nbwOtherwiseDisposed: data.reduce((sum: number, r: any) => sum + r.nbwOtherwiseDisposed, 0),
-      totalDisposed: data.reduce((sum: number, r: any) => sum + r.totalDisposed, 0),
-      nbwPendingEnd: data.reduce((sum: number, r: any) => sum + r.nbwPendingEnd, 0),
-      nbwExecutedSTGR: data.reduce((sum: number, r: any) => sum + r.nbwExecutedSTGR, 0),
-      nbwExecutedST: data.reduce((sum: number, r: any) => sum + r.nbwExecutedST, 0),
-      nbwExecutedGR: data.reduce((sum: number, r: any) => sum + r.nbwExecutedGR, 0),
-      nbwExecutedOther: data.reduce((sum: number, r: any) => sum + r.nbwExecutedOther, 0)
+      totalNBWPendingStart: data.reduce((sum, r) => sum + r.totalNBWPendingStart, 0),
+      nbwReceived: data.reduce((sum, r) => sum + r.nbwReceived, 0),
+      total: data.reduce((sum, r) => sum + r.total, 0),
+      nbwExecutedDuringDrive: data.reduce((sum, r) => sum + r.nbwExecutedDuringDrive, 0),
+      nbwOtherwiseDisposed: data.reduce((sum, r) => sum + r.nbwOtherwiseDisposed, 0),
+      totalDisposed: data.reduce((sum, r) => sum + r.totalDisposed, 0),
+      nbwPendingEnd: data.reduce((sum, r) => sum + r.nbwPendingEnd, 0),
+      nbwExecutedSTGR: data.reduce((sum, r) => sum + r.nbwExecutedSTGR, 0),
+      nbwExecutedST: data.reduce((sum, r) => sum + r.nbwExecutedST, 0),
+      nbwExecutedGR: data.reduce((sum, r) => sum + r.nbwExecutedGR, 0),
+      nbwExecutedOther: data.reduce((sum, r) => sum + r.nbwExecutedOther, 0)
     });
     totalsRow.font = { bold: true };
     totalsRow.fill = {
@@ -221,8 +221,12 @@ export async function generateNBWExcel(): Promise<Buffer> {
   }
 
   const buffer = await workbook.xlsx.writeBuffer();
-  return buffer as unknown as Buffer;
+  return buffer as Buffer;
 }
+
+/**
+ * Generate Excel report for Firearms Drive
+ */
 export async function generateFirearmsExcel(): Promise<Buffer> {
   await connectMongo();
   const data = await FirearmsDriveModel.find().sort({ district: 1 }).lean();
@@ -253,30 +257,30 @@ export async function generateFirearmsExcel(): Promise<Buffer> {
   sheet.getRow(2).font = { bold: true };
   sheet.getRow(2).alignment = { horizontal: "center" };
 
-  data.forEach((row: any) => {
+  data.forEach((row) => {
     sheet.addRow(row);
   });
 
   if (data.length > 0) {
     const totalsRow = sheet.addRow({
       district: "TOTAL",
-      casesRegistered: data.reduce((sum: number, r: any) => sum + r.casesRegistered, 0),
-      personsArrested: data.reduce((sum: number, r: any) => sum + r.personsArrested, 0),
-      gunsRifles: data.reduce((sum: number, r: any) => sum + r.gunsRifles, 0),
-      pistols: data.reduce((sum: number, r: any) => sum + r.pistols, 0),
-      revolvers: data.reduce((sum: number, r: any) => sum + r.revolvers, 0),
-      mouzers: data.reduce((sum: number, r: any) => sum + r.mouzers, 0),
-      ak47: data.reduce((sum: number, r: any) => sum + r.ak47, 0),
-      slr: data.reduce((sum: number, r: any) => sum + r.slr, 0),
-      others: data.reduce((sum: number, r: any) => sum + r.others, 0),
-      ammunition: data.reduce((sum: number, r: any) => sum + r.ammunition, 0),
-      cartridges: data.reduce((sum: number, r: any) => sum + r.cartridges, 0)
+      casesRegistered: data.reduce((sum, r) => sum + r.casesRegistered, 0),
+      personsArrested: data.reduce((sum, r) => sum + r.personsArrested, 0),
+      gunsRifles: data.reduce((sum, r) => sum + r.gunsRifles, 0),
+      pistols: data.reduce((sum, r) => sum + r.pistols, 0),
+      revolvers: data.reduce((sum, r) => sum + r.revolvers, 0),
+      mouzers: data.reduce((sum, r) => sum + r.mouzers, 0),
+      ak47: data.reduce((sum, r) => sum + r.ak47, 0),
+      slr: data.reduce((sum, r) => sum + r.slr, 0),
+      others: data.reduce((sum, r) => sum + r.others, 0),
+      ammunition: data.reduce((sum, r) => sum + r.ammunition, 0),
+      cartridges: data.reduce((sum, r) => sum + r.cartridges, 0)
     });
     totalsRow.font = { bold: true };
   }
 
   const buffer = await workbook.xlsx.writeBuffer();
-  return buffer as unknown as Buffer;
+  return buffer as Buffer;
 }
 
 /**
@@ -311,7 +315,7 @@ export async function generateNarcoticsExcel(): Promise<Buffer> {
   sheet.getRow(2).font = { bold: true };
   sheet.getRow(2).alignment = { horizontal: "center" };
 
-  data.forEach((row: any) => {
+  data.forEach((row) => {
     sheet.addRow({
       ...row,
       ganja: Number(row.ganja.toFixed(2)),
@@ -325,21 +329,21 @@ export async function generateNarcoticsExcel(): Promise<Buffer> {
   if (data.length > 0) {
     const totalsRow = sheet.addRow({
       district: "TOTAL",
-      casesRegistered: data.reduce((sum: number, r: any) => sum + r.casesRegistered, 0),
-      personsArrested: data.reduce((sum: number, r: any) => sum + r.personsArrested, 0),
-      ganja: Number(data.reduce((sum: number, r: any) => sum + r.ganja, 0).toFixed(2)),
-      brownSugar: Number(data.reduce((sum: number, r: any) => sum + r.brownSugar, 0).toFixed(2)),
-      vehicles: data.reduce((sum: number, r: any) => sum + r.vehicles, 0),
-      ganjaPlantsDestroyed: data.reduce((sum: number, r: any) => sum + r.ganjaPlantsDestroyed, 0),
-      bhang: Number(data.reduce((sum: number, r: any) => sum + r.bhang, 0).toFixed(2)),
-      opium: Number(data.reduce((sum: number, r: any) => sum + r.opium, 0).toFixed(2)),
-      coughSyrup: data.reduce((sum: number, r: any) => sum + r.coughSyrup, 0),
-      cash: Number(data.reduce((sum: number, r: any) => sum + r.cash, 0).toFixed(2))
+      casesRegistered: data.reduce((sum, r) => sum + r.casesRegistered, 0),
+      personsArrested: data.reduce((sum, r) => sum + r.personsArrested, 0),
+      ganja: Number(data.reduce((sum, r) => sum + r.ganja, 0).toFixed(2)),
+      brownSugar: Number(data.reduce((sum, r) => sum + r.brownSugar, 0).toFixed(2)),
+      vehicles: data.reduce((sum, r) => sum + r.vehicles, 0),
+      ganjaPlantsDestroyed: data.reduce((sum, r) => sum + r.ganjaPlantsDestroyed, 0),
+      bhang: Number(data.reduce((sum, r) => sum + r.bhang, 0).toFixed(2)),
+      opium: Number(data.reduce((sum, r) => sum + r.opium, 0).toFixed(2)),
+      coughSyrup: data.reduce((sum, r) => sum + r.coughSyrup, 0),
+      cash: Number(data.reduce((sum, r) => sum + r.cash, 0).toFixed(2))
     });
     totalsRow.font = { bold: true };
   }
 
   const buffer = await workbook.xlsx.writeBuffer();
-  return buffer as unknown as Buffer;
+  return buffer as Buffer;
 }
 

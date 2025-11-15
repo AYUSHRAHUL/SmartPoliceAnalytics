@@ -44,7 +44,7 @@ export async function getDistrictPerformance(
   const officers = await OfficerModel.find(officerQuery).lean();
 
   // Build query for CCTNS data
-  const cctnsQuery: any = {};
+  const cctnsQuery: Record<string, unknown> = {};
   if (district) {
     cctnsQuery.district = district;
   }
@@ -64,7 +64,7 @@ export async function getDistrictPerformance(
   const districtMap = new Map<string, DistrictPerformance>();
 
   // Process officers
-  officers.forEach((officer: any) => {
+  officers.forEach((officer) => {
     const dist = officer.district || "Unknown";
     if (!districtMap.has(dist)) {
       districtMap.set(dist, {
@@ -85,11 +85,11 @@ export async function getDistrictPerformance(
   });
 
   // Process CCTNS data
-  const convictions = cctnsData.filter((d: any) => d.module === "Convictions");
-  const detections = cctnsData.filter((d: any) => d.module === "Detections");
-  const specialDrives = cctnsData.filter((d: any) => d.module === "SpecialDrives");
+  const convictions = cctnsData.filter((d) => d.module === "Convictions");
+  const detections = cctnsData.filter((d) => d.module === "Detections");
+  const specialDrives = cctnsData.filter((d) => d.module === "SpecialDrives");
 
-  convictions.forEach((conv: any) => {
+  convictions.forEach((conv) => {
     const dist = conv.district || "Unknown";
     if (!districtMap.has(dist)) {
       districtMap.set(dist, {
@@ -105,7 +105,7 @@ export async function getDistrictPerformance(
     districtMap.get(dist)!.totalConvictions++;
   });
 
-  detections.forEach((det: any) => {
+  detections.forEach((det) => {
     const dist = det.district || "Unknown";
     if (!districtMap.has(dist)) {
       districtMap.set(dist, {
@@ -124,7 +124,7 @@ export async function getDistrictPerformance(
   });
 
   // Calculate averages and ratios
-  const results = Array.from(districtMap.values()).map((perf: any) => {
+  const results = Array.from(districtMap.values()).map((perf) => {
     perf.averageScore =
       perf.totalOfficers > 0 ? Number((perf.averageScore / perf.totalOfficers).toFixed(2)) : 0;
     perf.convictionRatio =
@@ -166,7 +166,7 @@ export async function getDrivePerformance(
   // Group by drive name
   const driveMap = new Map<string, DrivePerformance>();
 
-  drives.forEach((drive: any) => {
+  drives.forEach((drive) => {
     const name = drive.driveName || "Unknown Drive";
     if (!driveMap.has(name)) {
       driveMap.set(name, {
@@ -186,7 +186,7 @@ export async function getDrivePerformance(
   });
 
   // Calculate metrics
-  const results = Array.from(driveMap.values()).map((perf: any) => {
+  const results = Array.from(driveMap.values()).map((perf) => {
     perf.averageCasesPerOfficer =
       perf.participatingOfficers > 0
         ? Number((perf.totalCasesHandled / perf.participatingOfficers).toFixed(2))
