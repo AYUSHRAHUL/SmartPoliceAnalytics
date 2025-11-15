@@ -1,0 +1,1 @@
+self.__REACT_LOADABLE_MANIFEST='{"components\\\\gis\\\\DistrictMap.tsx -> leaflet/dist/leaflet.css":{"id":35046,"files":["static/css/fc1c9daac70c093b.css","static/chunks/46.fe80926032d08ec5.js"]},"components\\\\gis\\\\DistrictMap.tsx -> react-leaflet":{"id":29305,"files":["static/chunks/d0deef33.414f5e0355024f0b.js","static/chunks/305.b169bd56f433e87c.js"]}}';
